@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  arangodb:
+    image: arangodb:latest
+    container_name: arangodb
+    ports:
+      - "8529:8529"   # web interface for arango accessed via localhost:8529
+    environment:
+      ARANGO_ROOT_PASSWORD: "password"
+    volumes:
+      - arangodb_data:/var/lib/arangodb3
+      - ./import:/import  # I made this directory to import the csv dataset files
+
+volumes:
+  arangodb_data:
