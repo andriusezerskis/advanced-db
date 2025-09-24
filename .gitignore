@@ -12,6 +12,10 @@ CMakeCache.txt
 /build
 /lib
 
+# Database stuff
+*.db
+*.sqlite3
+
 # Python stuff
 /.venv
 /.pytest_cache
