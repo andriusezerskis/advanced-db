@@ -26,7 +26,6 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_json()
-            # Si le client envoie ses infos
             if data.get("action") == "create_user":
                 name = data.get("name")
                 age = data.get("age")
@@ -36,7 +35,6 @@ async def websocket_endpoint(websocket: WebSocket):
                     "user": users[uid]
                 })
 
-            # Si le client demande son état de contamination
             elif data.get("action") == "check_status":
                 user = users.get(uid)
                 if user:
