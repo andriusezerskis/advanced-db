@@ -11,7 +11,7 @@ services:
       NEO4J_AUTH: "${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-password}"
     volumes:
       - neo4j_data:/data
-      - ./import:/var/lib/neo4j/import  # I made this directory to import the csv dataset files
+      - ./import:/var/lib/neo4j/import  # I made this directory to import the csv dataset files and schemas
 
 volumes:
   neo4j_data:
