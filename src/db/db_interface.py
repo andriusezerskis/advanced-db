@@ -4,6 +4,20 @@ from enum import Enum
 from typing import Optional, List
 
 
+
+class TemplateRequests(Enum):
+
+    """Enum for Cypher query templates. Please ensure to use parameterized queries when necessary."""
+
+    ADD_USER: str = """CREATE (p:Person {id: $id, first_name: $first_name, last_name: $last_name, age: $age, has_covid: $has_covid});"""
+    GET_ALL_USERS: str = """MATCH (p:Person) RETURN p;"""
+    GET_USER: str = """MATCH (p:Person {id: $id}) RETURN p.id AS id, p.first_name AS first_name, p.last_name AS last_name, p.age AS age, p.has_covid AS has_covid;"""
+
+    def list_params(self) -> List[str]:
+        """List all parameters used in the query template."""
+        return [part[1:] for part in self.value.split() if part.startswith("$")]
+
+
 class Neo4JDB:
 
     NEO4J_URI: str = "bolt://localhost:7687"
