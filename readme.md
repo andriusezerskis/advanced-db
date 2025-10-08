@@ -1,4 +1,4 @@
-## Running Neo4j with Docker Compose
+# Running Neo4j with Docker Compose
 
 To spin up a Neo4j instance using Docker Compose, follow these steps:
 
@@ -16,6 +16,12 @@ To spin up a Neo4j instance using Docker Compose, follow these steps:
 
    ```bash
    docker-compose down  # you might need to use sudo
+   ```
+
+5. To erease the content of the container, use:
+
+   ```bash
+   docker volume rm neo4j-docker_neo4j_data  # use docker volume ls to find the correct name
    ```
 
 Ensure Docker is installed and running on your system before executing these steps.
