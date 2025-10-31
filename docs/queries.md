@@ -60,6 +60,16 @@ MATCH (healthy:Person {has_covid: false})-[:EXPOSED_TO {exposure: 'CLOSE'}]->(in
 RETURN count(DISTINCT healthy);
 ```
 
+### 4. Count covided people of age 65+
+
+This query returns the number of **covided people** `(has_covid = true)` who is older the 65. (This query is designed to be easy no matter the db type)
+
+```cypher
+MATCH (covided:Person {has_covid: true}) 
+WHERE covided.age > 65
+RETURN count(DISTINCT covided)
+```
+
 # SQLite Covid19 queries
 
 ## 1. Count people who have at least one contact with covid
