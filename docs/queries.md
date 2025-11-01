@@ -17,7 +17,8 @@ Before running the queries, make sure you **load the datasets** into your neo4j 
        first_name: row.first_name,
        last_name: row.last_name,
        age: toInteger(row.age),
-       has_covid: row.has_covid = 'True'
+       has_covid: row.has_covid = 'True',
+       origin: row.origin
    });
    ```
 
@@ -27,7 +28,11 @@ Before running the queries, make sure you **load the datasets** into your neo4j 
    LOAD CSV WITH HEADERS FROM 'file:///covid_relationships.csv' AS row
    MATCH (p1:Person {id: toInteger(row.from_id)})
    MATCH (p2:Person {id: toInteger(row.to_id)})
-   CREATE (p1)-[:EXPOSED_TO {exposure: row.exposure}]->(p2);
+   CREATE (p1)-[:EXPOSED_TO {
+    exposure: row.exposure,
+    from_origin: row.from_origin,
+    to_origin: row.to_origin
+   }]->(p2);
    ```
 
 ---
@@ -65,7 +70,7 @@ RETURN count(DISTINCT healthy);
 This query returns the number of **covided people** `(has_covid = true)` who is older the 65. (This query is designed to be easy no matter the db type)
 
 ```cypher
-MATCH (covided:Person {has_covid: true}) 
+MATCH (covided:Person {has_covid: true})
 WHERE covided.age > 65
 RETURN count(DISTINCT covided)
 ```
