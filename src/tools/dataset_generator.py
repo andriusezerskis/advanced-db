@@ -86,7 +86,7 @@ class DatasetGenerator:
             case FieldType.FORMAT:
                 if not f.fmt:
                     raise ValueError(f"Field {f.name} of type FORMAT must have a fmt string defined.")
-                if not re.search(r"\{(\w+)\}", f.fmt):
+                if not re.search(r"\{[^}]+\}", f.fmt): # allow non-empty {...} format strings
                     raise ValueError(f"Field {f.name} has an invalid format string: {f.fmt}")
                 
             case FieldType.INCREMENT:
@@ -227,7 +227,7 @@ class CovidDatasetExample:
     interactions between individuals with different exposure levels.
     """
 
-    res_fp: Path = Path(__file__).resolve().parent.parent / r'res'
+    res_fp: Path = Path(__file__).resolve().parent.parent.parent / r'res'
     
     @staticmethod
     def node_csv(fp: str, covid_odds: float, records: int) -> dataset_t:
@@ -240,6 +240,8 @@ class CovidDatasetExample:
 
         fnds_fp: str = str(CovidDatasetExample.res_fp / 'fnames')
         lnds_fp: str = str(CovidDatasetExample.res_fp / 'lnames')
+        countriesds_fp: str = str(CovidDatasetExample.res_fp / 'countries')
+        
 
         template: Template = Template(fields=[
             FieldSpec(name='id', field_t=FieldType.INCREMENT, step=1),
@@ -247,6 +249,7 @@ class CovidDatasetExample:
             FieldSpec(name='last_name', field_t=FieldType.CHOICE, values=DatasetGenerator.choices_from_file(lnds_fp)),
             FieldSpec(name='age', field_t=FieldType.RANGE, minr=1, maxr=100),
             FieldSpec(name='has_covid', field_t=FieldType.CHOICE_WEIGHTED, values=[True, False], weights=[covid_odds, 1 - covid_odds]),
+            FieldSpec(name='origin', field_t=FieldType.CHOICE, values=DatasetGenerator.choices_from_file(countriesds_fp))
         ])
 
         # Generate a dataset with some records and export to CSV
@@ -259,7 +262,7 @@ class CovidDatasetExample:
 
         """
         Generate a CSV file with a dataset of relationships between individuals in the provided dataset. \n
-        Each relationship has an exposure level which can be `CLOSE`, `CASUAL`, or `DISTANT`. \n
+        Each relationship has an exposure level which can be `CLOSE`, `CASUAL`, or `DISTANT`, as well as a country of origin. \n
         Raises `ValueError` if the provided dataset is empty or if the max_relationships count is not positive.
         """
 
@@ -267,16 +270,25 @@ class CovidDatasetExample:
         if max_relationships <= 0: raise ValueError("Max relationships must be a positive integer.")
 
         n: int = len(dataset)
+        
+        origins = [node['origin'] for node in dataset]  # precompute origin countries
 
         template: Template = Template(fields=[
             FieldSpec(name='id', field_t=FieldType.INCREMENT, step=1),
             FieldSpec(name='from_id', field_t=FieldType.RANGE, minr=0, maxr=n-1),
             FieldSpec(name='to_id', field_t=FieldType.RANGE, minr=0, maxr=n-1),
             FieldSpec(name='exposure', field_t=FieldType.CHOICE, values=['CLOSE', 'CASUAL', 'DISTANT']),
-        ])
-
+        ])       
+        
         # Generate a dataset with some records and export to CSV
         dataset_rel: dataset_t = DatasetGenerator.generate_dataset(template, max_relationships)
+        
+        for relation in dataset_rel:
+            from_id = relation['from_id']
+            to_id = relation['to_id']
+            relation['from_origin'] = origins[from_id]
+            relation['to_origin'] = origins[to_id]
+        
         DatasetGenerator.export_csv(dataset_rel, fp)
         return dataset_rel
 
@@ -292,6 +304,6 @@ if __name__ == "__main__":
     relationship_factor: float = 3.0
     odds: float = 0.1
 
-    n: dataset_t = CovidDatasetExample.node_csv('res/covid_dataset.csv', odds, records)
-    e: dataset_t = CovidDatasetExample.relationship_csv('res/covid_relationships.csv', n, round(records * relationship_factor))
+    n: dataset_t = CovidDatasetExample.node_csv('dockers/neo4j-docker/import/covid_dataset.csv', odds, records)
+    e: dataset_t = CovidDatasetExample.relationship_csv('dockers/neo4j-docker/import/covid_relationships.csv', n, round(records * relationship_factor))
 
