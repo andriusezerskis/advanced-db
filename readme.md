@@ -31,12 +31,12 @@ Ensure Docker is installed and running on your system before executing these ste
 Same as Neo4j, but the localhost link is [http://localhost:8529](http://localhost:8529). The username is `root`, and password is `password`.
 
 ```bash
-arangosh --server.username root --server.password "password" --server.database "example"
+arangosh --server.username root --server.password "password" --server.database "arangodb"
   --javascript.execute-string 'if (db._collection("exposed_to")) db.exposed_to.drop(); if (db._collection("persons")) db.persons.drop(); db._create("persons"); db._createEdgeCollection("exposed_to");'
 ```
 
 ```bash
-arangoimport --file import/covid_dataset.csv --type csv --collection persons --create-collection true
+arangoimport --server.database "arangodb" --file import/covid_dataset.csv --type csv --collection persons --create-collection true
 ```
 
 ```bash
@@ -44,5 +44,5 @@ awk -F',' 'NR==1 {print "_key,_from,_to,exposure,from_origin,to_origin"; next} {
 ```
 
 ```bash
-arangoimport --file /import/covid_relationships_edges.csv --type csv --collection exposed_to --create-collection false --server.username root --server.password password
+arangoimport --server.database "arangodb" --file /import/covid_relationships_edges.csv --type csv --collection exposed_to --create-collection false --server.username root --server.password password
 ```
