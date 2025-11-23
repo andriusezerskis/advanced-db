@@ -35,9 +35,13 @@ arangosh --server.username root --server.password "password" --server.database "
   --javascript.execute-string 'if (db._collection("exposed_to")) db.exposed_to.drop(); if (db._collection("persons")) db.persons.drop(); db._create("persons"); db._createEdgeCollection("exposed_to");'
 ```
 
+Load the nodes:
+
 ```bash
 arangoimport --server.database "arangodb" --file import/covid_dataset.csv --type csv --collection persons --create-collection true
 ```
+
+Load the relationships:
 
 ```bash
 awk -F',' 'NR==1 {print "_key,_from,_to,exposure,from_origin,to_origin"; next} {printf "%s,persons/%s,persons/%s,%s,%s,%s\n", $1, $2, $3, $4, $5, $6}' /import/covid_relationships.csv > /import/covid_relationships_edges.csv
@@ -46,3 +50,26 @@ awk -F',' 'NR==1 {print "_key,_from,_to,exposure,from_origin,to_origin"; next} {
 ```bash
 arangoimport --server.database "arangodb" --file /import/covid_relationships_edges.csv --type csv --collection exposed_to --create-collection false --server.username root --server.password password
 ```
+
+- How to query:
+
+   - Sign in db:
+      ```bash
+      arangosh --server.username root --server.password "password" --server.database "arangodb"
+      ```
+
+   - Switch db:
+      ```javascript
+      db._useDatabase("db");
+      ```
+
+   - Query:
+      For limited results:
+      ```javascript
+      db._query("your query");
+      ```  
+
+      For exhaustive results:
+      ```javascript
+      db._query("your query").toArray(); 
+      ```  
