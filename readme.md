@@ -48,7 +48,7 @@ awk -F',' 'NR==1 {print "_key,_from,_to,exposure,from_origin,to_origin"; next} {
 ```
 
 ```bash
-arangoimport --server.database "arangodb" --file /import/covid_relationships_edges.csv --type csv --collection exposed_to --create-collection true
+arangoimport --server.database "arangodb" --file /import/covid_relationships_edges.csv --type csv --collection exposed_to --create-collection true --create-collection-type edge
 ```
 
 - How to query:
