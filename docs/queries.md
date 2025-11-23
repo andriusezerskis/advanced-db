@@ -75,7 +75,46 @@ WHERE covided.age > 65
 RETURN count(DISTINCT covided)
 ```
 
-# SQLite Covid19 queries
+
+
+# Arango Covid19 Queries
+
+---
+
+## Loading the datasets
+
+With the "arangdb" already created (aside from the native "_system" db)
+
+```bash
+arangoimport --server.database "arangodb" --file import/covid_dataset.csv --type csv --collection persons --create-collection true
+```
+
+```bash
+arangoimport --server.database "arangodb" --file /import/covid_relationships_edges.csv --type csv --collection exposed_to --create-collection true --create-collection-type edge
+```
+
+---
+
+## 1. Count people who have at least one contact with covid
+
+This query returns the **number of people** who are _directly connected_ to someone who has covid.
+
+```AQL
+
+```
+
+### 2. Count people with no covid cases in their 2-degree circle
+
+### 3. Count healthy people at risk from CLOSE contacts
+
+### 4. Count covided people of age 65+
+
+
+
+
+# SQLite Covid19 Queries
+
+---
 
 ## 1. Count people who have at least one contact with covid
 
