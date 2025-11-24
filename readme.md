@@ -38,14 +38,16 @@ arangosh --server.username root --server.password "password" --server.database "
 Load the nodes:
 
 ```bash
-arangoimport --server.database "arangodb" --file import/covid_dataset.csv --type csv --collection persons --create-collection true
+arangoimport --server.database "arangodb" --file import/covid_dataset.csv --type csv --collection persons --create-collection true --translate "id=_key"
+```
+
+Create the edges.csv with arango field names:
+
+```bash
+awk -F',' 'NR==1 {print "_key,_from,_to,exposure"; next} {printf "%s,persons/%s,persons/%s,%s\n", $1, $2, $3, $4}' /import/covid_relationships.csv > /import/covid_relationships_edges.csv
 ```
 
 Load the relationships:
-
-```bash
-awk -F',' 'NR==1 {print "_key,_from,_to,exposure,from_origin,to_origin"; next} {printf "%s,persons/%s,persons/%s,%s,%s,%s\n", $1, $2, $3, $4, $5, $6}' /import/covid_relationships.csv > /import/covid_relationships_edges.csv
-```
 
 ```bash
 arangoimport --server.database "arangodb" --file /import/covid_relationships_edges.csv --type csv --collection exposed_to --create-collection true --create-collection-type edge
