@@ -270,8 +270,6 @@ class CovidDatasetExample:
         if max_relationships <= 0: raise ValueError("Max relationships must be a positive integer.")
 
         n: int = len(dataset)
-        
-        origins = [node['origin'] for node in dataset]  # precompute origin countries
 
         template: Template = Template(fields=[
             FieldSpec(name='id', field_t=FieldType.INCREMENT, step=1),
@@ -282,12 +280,6 @@ class CovidDatasetExample:
         
         # Generate a dataset with some records and export to CSV
         dataset_rel: dataset_t = DatasetGenerator.generate_dataset(template, max_relationships)
-        
-        for relation in dataset_rel:
-            from_id = relation['from_id']
-            to_id = relation['to_id']
-            relation['from_origin'] = origins[from_id]
-            relation['to_origin'] = origins[to_id]
         
         DatasetGenerator.export_csv(dataset_rel, fp)
         return dataset_rel
