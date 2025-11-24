@@ -53,7 +53,12 @@ Load the relationships:
 arangoimport --server.database "arangodb" --file /import/covid_relationships_edges.csv --type csv --collection exposed_to --create-collection true --create-collection-type edge
 ```
 
-- How to query:
+Graph setup:
+
+   - Via [http://localhost:8529](http://localhost:8529): create a GeneralGraph with "exposed_to" collection as edge and "persons" collection as both the from and to collections
+   - Change the settings to update the view.
+
+How to query:
 
    - Sign in db:
       ```bash
