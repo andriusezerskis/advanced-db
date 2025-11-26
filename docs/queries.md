@@ -61,7 +61,7 @@ RETURN count(p);
 This query returns the number of **healthy people** `(has_covid = false)` who are in direct `CLOSE` contact with someone who has covid.
 
 ```cypher
-MATCH (healthy:Person {has_covid: false})-[:EXPOSED_TO {exposure: 'CLOSE'}]->(infected:Person {has_covid: true})
+MATCH (healthy:Person {has_covid: false})-[:EXPOSED_TO {exposure: 'CLOSE'}]-(infected:Person {has_covid: true})
 RETURN count(DISTINCT healthy);
 ```
 
@@ -136,13 +136,13 @@ This query returns the number of **healthy people** `(has_covid = false)` who ar
 ```AQL
 FOR p IN persons
     FILTER p.has_covid == false
-    LET closeContact = (
+    LET closeCovid = (
         FOR contact, edge IN ANY p exposed_to
         FILTER edge.exposure == 'CLOSE' AND contact.has_covid
         LIMIT 1
         RETURN 1
     )
-    FILTER LENGTH(closeContact) > 0
+    FILTER LENGTH(closeCovid) > 0
     COLLECT WITH COUNT INTO total
     RETURN total
 ```
