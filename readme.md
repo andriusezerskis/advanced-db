@@ -35,10 +35,16 @@ arangosh --server.username root --server.password "password" --server.database "
   --javascript.execute-string 'if (db._collection("exposed_to")) db.exposed_to.drop(); if (db._collection("persons")) db.persons.drop(); db._create("persons"); db._createEdgeCollection("exposed_to");'
 ```
 
+Convert True/False to allow boolean recognition : 
+
+```bash
+sed '1!s/True/true/g; 1!s/False/false/g' /import/covid_dataset.csv > /import/covid_dataset_cleaned.csv
+```
+
 Load the nodes:
 
 ```bash
-arangoimport --server.database "arangodb" --file import/covid_dataset.csv --type csv --collection persons --create-collection true --translate "id=_key"
+arangoimport --server.database "arangodb" --file import/covid_dataset_cleaned.csv --type csv --collection persons --create-collection true --translate "id=_key" --convert true
 ```
 
 Create the edges.csv with arango field names:

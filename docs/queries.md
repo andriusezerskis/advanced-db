@@ -99,8 +99,14 @@ arangoimport --server.database "arangodb" --file /import/covid_relationships_edg
 
 This query returns the **number of people** who are _directly connected_ to someone who has covid.
 
-```AQL
+```cypher
+MATCH (p:Person)-[:EXPOSED_TO]-(contact:Person {has_covid: true})
+RETURN count(DISTINCT p);
+```
 
+```AQL
+FOR 
+RETURN count()
 ```
 
 ### 2. Count people with no covid cases in their 2-degree circle
