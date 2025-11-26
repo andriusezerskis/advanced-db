@@ -99,24 +99,64 @@ arangoimport --server.database "arangodb" --file /import/covid_relationships_edg
 
 This query returns the **number of people** who are _directly connected_ to someone who has covid.
 
-```cypher
-MATCH (p:Person)-[:EXPOSED_TO]-(contact:Person {has_covid: true})
-RETURN count(DISTINCT p);
-```
-
 ```AQL
-FOR 
-RETURN count()
+FOR p IN persons
+  LET hasExposure = (
+    FOR contact IN ANY p exposed_to
+      FILTER contact.has_covid == true
+      LIMIT 1  // Stop when one was found
+      RETURN 1
+  )
+  FILTER LENGTH(hasExposure) > 0
+  COLLECT WITH COUNT INTO total // Count the number of element that would be returned
+  RETURN total
 ```
 
 ### 2. Count people with no covid cases in their 2-degree circle
 
+This query returns the **number of people** who do not have any _covid-positive contacts_ within `1` or `2` hops.
+
+```AQL
+FOR p IN persons
+    LET hasCovidContact = (
+        FOR contact IN 1..2 ANY p exposed_to
+        FILTER contact.has_covid == true
+        LIMIT 1
+        RETURN 1
+    )
+    FILTER LENGTH(hasCovidContact) == 0
+    COLLECT WITH COUNT INTO total
+    RETURN total
+```
+
 ### 3. Count healthy people at risk from CLOSE contacts
+
+This query returns the number of **healthy people** `(has_covid = false)` who are in direct `CLOSE` contact with someone who has covid.
+
+```AQL
+FOR p IN persons
+    FILTER p.has_covid == false
+    LET closeContact = (
+        FOR contact, edge IN ANY p exposed_to
+        FILTER edge.exposure == 'CLOSE' AND contact.has_covid
+        LIMIT 1
+        RETURN 1
+    )
+    FILTER LENGTH(closeContact) > 0
+    COLLECT WITH COUNT INTO total
+    RETURN total
+```
 
 ### 4. Count covided people of age 65+
 
+This query returns the number of **covided people** `(has_covid = true)` who is older the 65. (This query is designed to be easy no matter the db type)
 
-
+```AQL
+FOR p IN persons
+    FILTER p.has_covid && p.age > 65
+    COLLECT WITH COUNT INTO total
+    RETURN total
+```
 
 # SQLite Covid19 Queries
 
