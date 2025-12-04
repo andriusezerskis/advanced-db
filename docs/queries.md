@@ -166,7 +166,7 @@ FOR p IN persons
 
 This query returns the number of people who were in _direct_ contact with at least one person who had covid.
 
-```sqlite
+```sql
 SELECT COUNT(*) as count
 FROM Person p
 WHERE EXISTS (
@@ -185,7 +185,7 @@ WHERE EXISTS (
 
 This query returns the **number of people** who do not have any _covid-positive contacts_ within `1` or `2` hops.
 
-```sqlite
+```sql
 WITH direct AS (
     SELECT DISTINCT p.id as person_id
     FROM Person p
@@ -223,4 +223,32 @@ WHERE p.id NOT IN (
     UNION
     SELECT person_id FROM two_hop
 );
+```
+
+## 3. Count healthy people at risk from CLOSE contacts
+
+People with `has_covid = FALSE` who are in direct contact (edge exposure = "CLOSE") with someone who has covid.
+
+```sql
+SELECT COUNT(DISTINCT p.id) AS count
+FROM Person p
+JOIN EXPOSED_TO e
+    ON p.id = e.from_id OR p.id = e.to_id
+JOIN Person inf
+    ON inf.id = CASE
+                    WHEN p.id = e.from_id THEN e.to_id
+                    ELSE e.from_id
+                END
+WHERE p.has_covid = FALSE
+  AND inf.has_covid = TRUE
+  AND e.exposure = 'CLOSE';
+```
+
+## 4. Count covided people of age 65+
+
+```sql
+SELECT COUNT(*) AS count
+FROM Person
+WHERE has_covid = TRUE
+  AND age > 65;
 ```
