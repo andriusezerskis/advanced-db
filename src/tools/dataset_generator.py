@@ -292,10 +292,4 @@ if __name__ == "__main__":
     # otherwise the relationships will be sparse and not very useful for testing.
     # I think a good rule of thumb is to have at least 2-3x more relationships than nodes.
 
-    records: int = 100_000
-    relationship_factor: float = 3.0
-    odds: float = 0.1
-
-    n: dataset_t = CovidDatasetExample.node_csv('dockers/neo4j-docker/import/covid_dataset.csv', odds, records)
-    e: dataset_t = CovidDatasetExample.relationship_csv('dockers/neo4j-docker/import/covid_relationships.csv', n, round(records * relationship_factor))
-
+    ...
