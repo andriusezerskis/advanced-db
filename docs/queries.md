@@ -1,4 +1,6 @@
-# Neo4j Covid19 Queries
+# Queries
+
+## Neo4j Covid19 Queries
 
 This document contains some **Cypher queries** to analyze stuff in our `covid19` contact graph.
 
@@ -75,9 +77,43 @@ WHERE covided.age > 65
 RETURN count(DISTINCT covided)
 ```
 
+### 5. Contaminate people in relationships with covid cases:
 
+```cypher
+MATCH (healthy:Person {has_covid: false})
+      -[:EXPOSED_TO {exposure: 'CLOSE'}]-
+      (:Person {has_covid: true})
 
-# Arango Covid19 Queries
+WITH DISTINCT healthy
+ORDER BY rand()
+WITH collect(healthy) AS close_people, $p AS p
+WITH close_people, toInteger(size(close_people) * p) AS take_p
+UNWIND close_people[0..take_p] AS new_cases
+SET new_cases.has_covid = true
+RETURN count(new_cases) AS newly_infected;
+```
+
+```cypher
+MATCH (healthy:Person {has_covid: false})- [rel:EXPOSED_TO] - (infected:Person {has_covid: true})
+WHERE rel.exposure = 'CASUAL'
+WITH collect(DISTINCT healthy) AS casual_people, $q AS q
+WITH casual_people, q, toInteger(size(casual_people) * q) AS take_q
+UNWIND apoc.coll.randomSubset(casual_people, take_q) AS new_cases
+SET new_cases.has_covid = true;
+RETURN count(new_cases) AS newly_infected;
+```
+
+```cypher
+MATCH (healthy:Person {has_covid: false})- [rel:EXPOSED_TO] - (infected:Person {has_covid: true})
+WHERE rel.exposure = 'DISTANT'
+WITH collect(DISTINCT healthy) AS distant_people, $r AS r
+WITH distant_people, r, toInteger(size(distant_people) * r) AS take_r
+UNWIND apoc.coll.randomSubset(distant_people, take_r) AS new_cases
+SET new_cases.has_covid = true;
+RETURN count(new_cases) AS newly_infected;
+```
+
+## Arango Covid19 Queries
 
 ---
 

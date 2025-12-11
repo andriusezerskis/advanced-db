@@ -172,6 +172,7 @@ if __name__ == "__main__":
     db: SQLITEDB = SQLITEDB("test.db")
     db.insert_people("res/covid_dataset1000k.csv")
     db.insert_exposures("res/covid_relationships3000k.csv")
+    
     r3 = db.execute_query(SQLITEDB.query3)
     r4 = db.execute_query(SQLITEDB.query4)
     r1 = db.execute_query(SQLITEDB.query1)
