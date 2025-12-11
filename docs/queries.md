@@ -113,7 +113,28 @@ SET new_cases.has_covid = true;
 RETURN count(new_cases) AS newly_infected;
 ```
 
-## Arango Covid19 Queries
+### 6. Kill people with covid
+
+```cypher
+MATCH (p:Person {has_covid: true})
+WITH p,
+     CASE 
+        WHEN p.age >= 65 THEN $x
+        WHEN p.age <= 5 THEN $x
+        ELSE $y
+     END AS death_rate
+ORDER BY rand()
+WITH collect({person: p, rate: death_rate}) AS people
+
+WITH [p IN people WHERE rand() < p.rate | p.person] AS to_die,
+     [p IN people WHERE rand() >= p.rate | p.person] AS to_survive
+
+FOREACH (dead IN to_die | DETACH DELETE dead)
+
+RETURN size(to_die) AS deaths;
+```
+
+# Arango Covid19 Queries
 
 ---
 
