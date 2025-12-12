@@ -215,6 +215,53 @@ FOR p IN persons
     RETURN total
 ```
 
+### 5. Contaminate people in relationships with covid cases:
+
+```AQL
+LET exposed_people = (
+  FOR healthy IN persons
+    FILTER healthy.has_covid == false
+    FOR v, e IN 1..1 ANY healthy exposed_to
+      FILTER v.has_covid == true
+      FILTER e.exposure == @exposure_type
+      RETURN DISTINCT healthy
+)
+
+LET sample_size = FLOOR(LENGTH(exposed_people) * @transmission_rate)
+
+LET shuffled = (
+  FOR person IN exposed_people
+    SORT RAND()
+    RETURN person
+)
+
+LET selected = SLICE(shuffled, 0, sample_size)
+
+LET new_cases = (
+  FOR person IN selected
+    UPDATE person WITH { has_covid: true } IN persons
+    RETURN NEW
+)
+
+RETURN { newly_infected: LENGTH(new_cases) }
+```
+
+### 6. Kill people with covid
+
+```AQL
+LET results = (
+  FOR person IN persons
+    FILTER person.has_covid == true
+    LET death_rate = (person.age >= 65 || person.age <= 5) ? @x : @y
+    LET dies = RAND() < death_rate
+    FILTER dies == true
+    REMOVE person IN persons
+    RETURN OLD
+)
+
+RETURN { deaths: LENGTH(results) }
+```
+
 # SQLite Covid19 Queries
 
 ---
