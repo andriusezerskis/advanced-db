@@ -44,19 +44,19 @@ sed '1!s/True/true/g; 1!s/False/false/g' /import/covid_dataset.csv > /import/cov
 Load the nodes:
 
 ```bash
-arangoimport --server.database "arangodb" --file import/covid_dataset_cleaned.csv --type csv --collection persons --create-collection true --translate "id=_key" --convert true
+arangoimport --server.database "arangodb" --server.password "password" --file import/covid_dataset10k_.csv --type csv --collection persons --overwrite true --create-collection true --translate "id=_key" --convert true
 ```
 
 Create the edges.csv with arango field names:
 
 ```bash
-awk -F',' 'NR==1 {print "_key,_from,_to,exposure"; next} {printf "%s,persons/%s,persons/%s,%s\n", $1, $2, $3, $4}' /import/covid_relationships.csv > /import/covid_relationships_edges.csv
+awk -F',' 'NR==1 {print "_key,_from,_to,exposure"; next} {printf "%s,persons/%s,persons/%s,%s\n", $1, $2, $3, $4}' /import/covid_relationships30k.csv > /import/covid_relationships30k_.csv
 ```
 
 Load the relationships:
 
 ```bash
-arangoimport --server.database "arangodb" --file /import/covid_relationships_edges.csv --type csv --collection exposed_to --create-collection true --create-collection-type edge
+arangoimport --server.database "arangodb" --server.password "password" --file /import/covid_relationships30k_.csv --type csv --collection exposed_to --overwrite true --create-collection true --create-collection-type edge
 ```
 
 Graph setup:
