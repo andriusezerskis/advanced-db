@@ -27,33 +27,33 @@ def to_seconds(values):
 queries = {
     "Q1": {
         "SQL": to_seconds(["7.15 s", "105 s", "5 h"]),
-        "Neo4j": to_seconds(["12 ms", "32 ms", "640 ms"]),
-        "Arango": to_seconds(["232 ms", "673 ms", "25.9 s"]),
+        "Neo4j": to_seconds(["4 ms", "11 ms", "193 ms"]),
+        "Arango": to_seconds(["131 ms", "461 ms", "13.4 s"]),
     },
     "Q2": {
         "SQL": to_seconds(["67.5 s", "1877 s", "10 d"]),
-        "Neo4j": to_seconds(["76 ms", "177 ms", "350 ms"]),
-        "Arango": to_seconds(["469 ms", "1.1 s", "56 s"]),
+        "Neo4j": to_seconds(["44 ms", "144 ms", "3473 ms"]),
+        "Arango": to_seconds(["283 ms", "774 ms", "29 s"]),
     },
     "Q3": {
         "SQL": to_seconds(["0 ms", "4 ms", "6.0 s"]),
-        "Neo4j": to_seconds(["177 ms", "96 ms", "190 ms"]),
-        "Arango": to_seconds(["319 ms", "1.2 s", "45 s"]),
+        "Neo4j": to_seconds(["17 ms", "59 ms", "1706 ms"]),
+        "Arango": to_seconds(["163 ms", "719 ms", "18 s"]),
     },
     "Q4": {
         "SQL": to_seconds(["0 ms", "0 ms", "3 ms"]),
-        "Neo4j": to_seconds(["14 ms", "19 ms", "380 ms"]),
-        "Arango": to_seconds(["1.4 ms", "3.5 ms", "100 ms"]),
+        "Neo4j": to_seconds(["3 ms", "5 ms", "85 ms"]),
+        "Arango": to_seconds(["1.4 ms", "3.2 ms", "105 ms"]),
     },
     "Q5": {
         "SQL": to_seconds(["120 ms", "250 ms", "286 h"]),
-        "Neo4j": to_seconds(["120 ms", "600 ms", "12 s"]),
-        "Arango": to_seconds(["354 ms", "1.37 s", "58 s"]),
+        "Neo4j": to_seconds(["120 ms", "600 ms", "445 s"]),
+        "Arango": to_seconds(["190 ms", "663 ms", "18 s"]),
     },
     "Q6": {
         "SQL": to_seconds(["15 ms", "40 ms", "60 s"]),
-        "Neo4j": to_seconds(["37 ms", "77 ms", "150 ms"]),
-        "Arango": to_seconds(["7.6 ms", "9.5 ms", "314 ms"]),
+        "Neo4j": to_seconds(["5 ms", "11 ms", "469 ms"]),
+        "Arango": to_seconds(["2.89 ms", "6.23 ms", "215.6 ms"]),
     },
 }
 
@@ -63,7 +63,7 @@ for q, data in queries.items():
         plt.plot(sizes, vals, marker='o', label=db)
     plt.xscale('log')
     plt.yscale('log')
-    plt.xlabel("Number of nodes (log scale)")
+    plt.xlabel("Number of edges (log scale)")
     plt.ylabel("Runtime (seconds, log scale)")
     plt.title(f"{q} runtime vs dataset size")
     plt.legend()
