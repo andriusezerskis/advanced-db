@@ -73,10 +73,12 @@ for q, data in queries.items():
 insert_nodes = {
     "SQL": to_seconds(["0.43 s", "0.25 s", "1 s"]),
     "Arango": to_seconds(["0.12 s", "0.28 s", "1.64 s"]),
+    "Neo4j": to_seconds(["305 ms", "255 ms", "14422 ms"]),
 }
 insert_edges = {
     "SQL": to_seconds(["0.55 s", "1.16 s", "5 s"]),
     "Arango": to_seconds(["0.55 s", "1.44 s", "12.75 s"]),
+    "Neo4j": to_seconds(["493 ms", "1296 ms", "51562 ms"]),
 }
 
 

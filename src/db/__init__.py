@@ -1,6 +1,6 @@
 
 from typing import List
-from .db_interface import Neo4JDB, TemplateRequests
+from .neo4j_interface import Neo4JDB, TemplateRequests
 
 
 # This file is part of the db package.

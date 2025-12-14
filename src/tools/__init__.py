@@ -1,6 +1,6 @@
 
 from typing import List
-from dataset_generator import DatasetGenerator, Template, FieldSpec, FieldType
+from db.dataset_generator import DatasetGenerator, Template, FieldSpec, FieldType
 from file_crawler import FileCrawler, FileCrawlQuery, FileCrawlResult
 
 

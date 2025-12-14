@@ -22,7 +22,8 @@ class SQLiteCovidDB:
                 first_name TEXT NOT NULL,
                 last_name TEXT NOT NULL,
                 age INTEGER NOT NULL,
-                has_covid BOOLEAN NOT NULL
+                has_covid BOOLEAN NOT NULL,
+                origin TEXT NOT NULL
             )
         """
     _RELATIONSHIP_TABLE: str = """
@@ -130,8 +131,8 @@ if __name__ == "__main__":
 
     # Uncomment the lines below to import data from CSV files (correct paths needed)
 
-    # db.import_csv('Person', r'res/covid_dataset.csv')
-    # db.import_csv('EXPOSED_TO', r'res/covid_relationships.csv')
+    db.import_csv('Person', r'res/covid_dataset1000k.csv')
+    db.import_csv('EXPOSED_TO', r'res/covid_relationships3000k.csv')
 
     db.close()
 

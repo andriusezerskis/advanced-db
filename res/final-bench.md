@@ -32,3 +32,10 @@ SQL    | Edges     | 0.55 s                | 1.16 s                | 5 s
 
 Arango | Nodes     | 0.12 s                | 0.28 s                | 1.64 s
 Arango | Edges     | 0.55 s                | 1.44 s                | 12.75 s
+
+
+DB     | 10k nodes / 30k edges | 30k nodes / 150k edges | 1M nodes / 3M edges
+------------------------------------------------------------------------------------------
+SQL    | 964 Ko                | 4,05 Mo                | 101 Mo
+Arango | 7,68 Mo               | 35,96 Mo               | 685,33 Mo
+Neo4J  | 5,39 Mo               | 12,4 Mo                | 566 Mo
