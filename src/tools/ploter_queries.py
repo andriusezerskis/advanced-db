@@ -47,7 +47,7 @@ queries = {
     },
     "Q5": {
         "SQL": to_seconds(["120 ms", "250 ms", "286 h"]),
-        "Neo4j": to_seconds(["120 ms", "600 ms", "445 ms"]),
+        "Neo4j": to_seconds(["120 ms", "200 ms", "445 ms"]),
         "Arango": to_seconds(["190 ms", "663 ms", "18 s"]),
     },
     "Q6": {
