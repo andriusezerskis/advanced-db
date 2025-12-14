@@ -47,7 +47,7 @@ queries = {
     },
     "Q5": {
         "SQL": to_seconds(["120 ms", "250 ms", "286 h"]),
-        "Neo4j": to_seconds(["120 ms", "600 ms", "445 s"]),
+        "Neo4j": to_seconds(["120 ms", "600 ms", "445 ms"]),
         "Arango": to_seconds(["190 ms", "663 ms", "18 s"]),
     },
     "Q6": {
@@ -63,7 +63,7 @@ for q, data in queries.items():
         plt.plot(sizes, vals, marker='o', label=db)
     plt.xscale('log')
     plt.yscale('log')
-    plt.xlabel("Number of edges (log scale)")
+    plt.xlabel("Number of nodes (log scale)")
     plt.ylabel("Runtime (seconds, log scale)")
     plt.title(f"{q} runtime vs dataset size")
     plt.legend()
