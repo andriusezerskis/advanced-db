@@ -356,3 +356,64 @@ FROM Person
 WHERE has_covid = TRUE
   AND age > 65;
 ```
+
+## 5. Contaminate people in relationships with covid cases:
+
+```sql
+WITH healthy_exposed AS (
+    SELECT DISTINCT p1.id
+    FROM Person p1
+    JOIN EXPOSED_TO e
+      ON (p1.id = e.from_id OR p1.id = e.to_id)
+    JOIN Person p2
+      ON (p2.id = e.from_id OR p2.id = e.to_id)
+    WHERE p1.has_covid = FALSE
+      AND p2.has_covid = TRUE
+      AND e.exposure = 'CLOSE'
+      AND p1.id <> p2.id
+),
+picked AS (
+    SELECT id
+    FROM healthy_exposed
+    ORDER BY RANDOM()
+    LIMIT (
+        SELECT CAST(COUNT(*) * :p AS INTEGER)
+        FROM healthy_exposed
+    )
+)
+UPDATE Person
+SET has_covid = TRUE
+WHERE id IN (SELECT id FROM picked)
+RETURNING COUNT(*) AS newly_infected;
+```
+
+## 6. Kill people with covid
+
+```sql
+WITH infected AS (
+    SELECT
+        id,
+        CASE
+            WHEN age >= 65 THEN :x
+            WHEN age <= 5  THEN :x
+            ELSE :y
+        END AS death_rate
+    FROM Person
+    WHERE has_covid = TRUE
+),
+marked AS (
+    SELECT
+        id,
+        death_rate,
+        RANDOM() AS r
+    FROM infected
+),
+to_die AS (
+    SELECT id
+    FROM marked
+    WHERE r < death_rate
+)
+DELETE FROM Person
+WHERE id IN (SELECT id FROM to_die)
+RETURNING COUNT(*) AS deaths;
+```
