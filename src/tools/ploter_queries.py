@@ -101,7 +101,7 @@ plt.show()
 
 plt.figure()
 for db, vals in insert_edges.items():
-    plt.plot(sizes, vals, marker='o', label=db)
+    plt.plot(sizes, vals, marker='o', label=db, color=colors[db])
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel("Number of edges (log scale)")
