@@ -80,11 +80,16 @@ insert_edges = {
     "Arango": to_seconds(["0.55 s", "1.44 s", "12.75 s"]),
     "Neo4j": to_seconds(["493 ms", "1296 ms", "51562 ms"]),
 }
+colors = {
+    "SQL": "#1f77b4",     # blue
+    "Arango": "#2ca02c",  # orange
+    "Neo4j": "#e79658",   # green
+}
 
 
 plt.figure()
 for db, vals in insert_nodes.items():
-    plt.plot(sizes, vals, marker='o', label=db)
+    plt.plot(sizes, vals, marker='o', label=db, color=colors[db])
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel("Number of nodes (log scale)")

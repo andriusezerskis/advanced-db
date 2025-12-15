@@ -12,8 +12,8 @@ sizes_mb = {
 
 colors = {
     "SQL": "#1f77b4",     # blue
-    "Arango": "#e79658",  # orange
-    "Neo4J": "#2ca02c",   # green
+    "Arango": "#2ca02c",  # orange
+    "Neo4J": "#e79658",   # green
 }
 
 x = np.arange(len(datasets))
